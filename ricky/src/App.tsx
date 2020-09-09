@@ -1,26 +1,19 @@
 import React from 'react';
 import {Store} from './Store'
+import './App.css'
 
 interface IEpsiode {
-  externals: {tvrage: number, thetvdb: number, imdb: string}
-  genres: string[]
-  id: 216
+  airdate: string
+  airstamp: string
+  airtime: string
+  id: number
   image: {medium: string, original: string}
-  language: string
   name: string
-  network: {id: 10, name: "Adult Swim"}
-  officialSite: string
-  premiered: string
-  rating: {average: 9.1}
+  number: number
   runtime: number
-  schedule: {time: "23:30", days: string[]}
-  status: string
+  season: number
   summary: string
-  type: string
-  updated: number
   url: string
-  webChannel: any
-  weight: number
 }
 export default function App():JSX.Element {
   const {state, dispatch} = React.useContext(Store)
@@ -41,14 +34,16 @@ export default function App():JSX.Element {
   console.log('state: ', state)
   return (
     <React.Fragment>
-      <h1>Rick and Morty</h1>
-      <p>Pick your favorite episode</p>
-      <section>
-        {state.episodes.map((episode:any) => {
+      <header className="header">
+        <h1>Rick and Morty</h1>
+        <p>Pick your favorite episode</p>
+      </header>
+      <section className="episode-layout">
+        {state.episodes.map((episode:IEpsiode) => {
           return (
-            <section key={episode.id}>
+            <section key={episode.id} className="episode-wrapper">
               <img src={episode.image.medium} alt={`Rick and Morty ${episode.name}`}></img>
-              <div>{episode.name}</div>
+              <h1>{episode.name}</h1>
               <section>
                 <p>Season: {episode.season}</p>
                 <p>Number: {episode.number}</p>
