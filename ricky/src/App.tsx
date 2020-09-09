@@ -4,8 +4,12 @@ import './App.css'
 
 import {IEpisode, IAction} from './interfaces'
 
+const EpisodeList = React.lazy<any>(() => import('./EpisodeList'))
+
 export default function App():JSX.Element {
   const {state, dispatch} = React.useContext(Store)
+
+  
 
   React.useEffect(() => {
     state.episodes.length === 0 && fetchDataAction()
@@ -38,6 +42,12 @@ export default function App():JSX.Element {
     return dispatch(dispatchObj)
   }
 
+  const props = {
+    episodes: state.episodes,
+    toggleFavAction: toggleFavAction,
+    favorites: state.favorites
+  }
+
   console.log('state: ', state)
   return (
     <React.Fragment>
@@ -46,25 +56,11 @@ export default function App():JSX.Element {
         <p>Pick your favorite episode</p>
         <p>Favorited Episodes: {state.favorites.length}</p>
       </header>
-      <section className="episode-layout">
-        {state.episodes.map((episode:IEpisode) => {
-          return (
-            <section key={episode.id} className="episode-wrapper" style={{
-              borderTop: state.favorites.find((fav: IEpisode) => fav.id === episode.id) ? '5px solid green' : '5px solid #333'
-            }}>
-              <img src={episode.image.medium} alt={`Rick and Morty ${episode.name}`}></img>
-              <h1>{episode.name}</h1>
-              <section className="episode-content">
-                <p>Season: {episode.season}</p>
-                <p className="episode-number">Number: {episode.number}</p>
-              </section>
-              <button type="button" onClick={() => toggleFavAction(episode)}>
-                {state.favorites.find((fav: IEpisode) => fav.id === episode.id) ? 'Unfav' : 'Fav'}
-              </button>
-            </section>
-          )
-        })}
-      </section>
+      <React.Suspense fallback={<div>loading...</div>}>
+        <section className="episode-layout">
+          <EpisodeList {...props} />
+        </section>
+      </React.Suspense>
     </React.Fragment>
   )
 }
